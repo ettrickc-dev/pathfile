@@ -135,7 +135,8 @@ async function buildPackagePdf(clientData, result, data) {
   lines.push({ text: `   ${m.label}` });
   if (m.usps) lines.push({ text: `   By USPS: ${m.usps}` });
   if (m.courier) lines.push({ text: `   By courier (FedEx/UPS/DHL): ${m.courier}` });
-  lines.push({ text: `   Confirm the address at ${m.url} before mailing.`, after: 6 });
+  lines.push({ text: `   IMPORTANT: where you mail this often depends on your home address. Confirm the correct address for your state at uscis.gov before mailing — a wrong address can get your package rejected.` });
+  lines.push({ text: `   Official address page: ${m.url}`, after: 6 });
 
   if (missing.length) {
     lines.push({ gap: 8 });
@@ -909,8 +910,7 @@ export default function App() {
             </button>
           ))}
           <div className="pf-disclaimer">
-            Not legal advice. Confirm fees and mailing addresses at <strong>uscis.gov</strong>
-            before filing. For complex cases, consult a licensed immigration attorney.
+            Not legal advice. Confirm fees and mailing addresses at <strong>uscis.gov</strong> before filing. For complex cases, consult a licensed immigration attorney.
           </div>
         </nav>
 
@@ -1685,6 +1685,7 @@ function Draft({ result, data, answers, paid, final, onNext, onBack, onRestart }
                     <p className="pf-mailbody">{m.body}</p>
                     {m.usps && <div className="pf-mailaddr"><span>By USPS</span>{m.usps}</div>}
                     {m.courier && <div className="pf-mailaddr"><span>By courier</span>{m.courier}</div>}
+                    <p className="pf-mailnote"><strong>Important:</strong> Where you mail this often depends on your home address. Confirm the correct mailing address for your state at <strong>uscis.gov</strong> before you send your package — the wrong address can get it rejected.</p>
                     <p className="pf-mailverify">{m.verify} <a href={m.url} target="_blank" rel="noreferrer">Open the official address page →</a></p>
                   </div>
                 );
@@ -1976,6 +1977,7 @@ const CSS = `
 .pf-order li{font-size:14px; line-height:1.6; margin-bottom:9px;}
 .pf-orderev{color:var(--muted); font-size:12.5px;}
 .pf-mailbox{border:1px solid var(--line); border-radius:11px; padding:16px 18px; background:var(--paper);}
+.pf-mailnote{margin:10px 0 0; font-size:0.86rem; line-height:1.5; color:#7a4a12; background:#fef6e9; border:1px solid #f1d9af; border-radius:8px; padding:9px 11px;}
 .pf-mailtitle{font-weight:600; font-size:14.5px; margin-bottom:6px;}
 .pf-mailbody{font-size:13.5px; color:var(--muted); line-height:1.55; margin:0 0 12px;}
 .pf-mailaddr{font-family:'Spline Sans Mono',monospace; font-size:13px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin-bottom:8px; line-height:1.5;}

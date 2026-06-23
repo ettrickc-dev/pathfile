@@ -111,34 +111,31 @@ function buildMaps(d) {
     ["ZipCode[0]",1,g("cc_zip")||g("p_zip")],["DaytimeTelephoneNumber[0]",1,g("cc_phone")||g("p_phone")],
     ["Email[0]",1,g("cc_email")||g("p_email")],
   ];
-  /* ---- NEW FORMS (starter maps) ----
-     These use the standard USCIS field names. They stay dormant until you
-     drop the real blank into /public/blanks AND run scripts/extract_fields.mjs
-     to build the field index for the form. After that, open the filled PDF and
-     nudge any row whose box is slightly off. See HOW_TO_ADD_OR_UPDATE_A_FORM.md. */
+  /* ---- NEW FORMS — real field maps (verified against the official blanks) ---- */
   const I90 = [
-    ["Pt1Line1_AlienNumber[0]",1,anum(g("s_anum"))],
-    ["Pt1Line3a_FamilyName[0]",1,g("s_last")],["Pt1Line3b_GivenName[0]",1,g("s_first")],
-    ["Pt1Line3c_MiddleName[0]",1,g("s_middle")],
-    ["Pt2Line6a_StreetNumberName[0]",1,g("s_street")],["Pt2Line6c_CityOrTown[0]",1,g("s_city")],
-    ["Pt2Line6d_State[0]",1,g("s_state")],["Pt2Line6e_ZipCode[0]",1,g("s_zip")],
-    ["Pt2Line9_DateOfBirth[0]",2,mmddyyyy(g("s_dob"))],["Pt2Line11_CountryOfBirth[0]",2,g("s_cob")],
+    ["P1_Line1_AlienNumber[0]",1,anum(g("s_anum"))],
+    ["P1_Line3a_FamilyName[0]",1,g("s_last")],["P1_Line3b_GivenName[0]",1,g("s_first")],
+    ["P1_Line3c_MiddleName[0]",1,g("s_middle")],
+    ["P1_Line6b_StreetNumberName[0]",1,g("s_street")],["P1_Line6d_CityOrTown[0]",1,g("s_city")],
+    ["P1_Line6e_State[0]",1,g("s_state")],["P1_Line6f_ZipCode[0]",1,g("s_zip")],
+    ["P1_Line9_DateOfBirth[0]",2,mmddyyyy(g("s_dob"))],
+    ["P1_Line11_CountryofBirth[0]",2,g("s_cob")],["P1_Line16_SSN[0]",2,g("s_ssn")],
   ];
   const I751 = [
-    ["Pt1Line1_AlienNumber[0]",1,anum(g("s_anum"))],
-    ["Pt1Line3a_FamilyName[0]",1,g("s_last")],["Pt1Line3b_GivenName[0]",1,g("s_first")],
-    ["Pt1Line3c_MiddleName[0]",1,g("s_middle")],
-    ["Pt1Line6_DateOfBirth[0]",1,mmddyyyy(g("s_dob"))],["Pt1Line8_CountryOfBirth[0]",1,g("s_cob")],
-    ["Pt1Line10a_StreetNumberName[0]",1,g("s_street")],["Pt1Line10c_CityOrTown[0]",1,g("s_city")],
-    ["Pt1Line10d_State[0]",1,g("s_state")],["Pt1Line10e_ZipCode[0]",1,g("s_zip")],
+    ["Pt1Line1a_FamilyName[0]",1,g("s_last")],["Pt1Line1b_GivenName[0]",1,g("s_first")],
+    ["Pt1Line1c_MiddleName[0]",1,g("s_middle")],
+    ["P1_Line4_DateOfBirth[0]",1,mmddyyyy(g("s_dob"))],["P1_Line5_CountryOfBirth[0]",1,g("s_cob")],
+    ["P1_Line6_CountryOfCitizenship[0]",1,g("s_coc")||g("s_cob")],
+    ["P1_Line7_AlienNumber[0]",1,anum(g("s_anum"))],["P1_Line8_SSN[0]",1,g("s_ssn")],
+    ["Pt1Line15e_State[0]",2,g("s_state")],["Pt1Line15f_ZipCode[0]",2,g("s_zip")],
   ];
   const I129F = [
     ["Pt1Line1_AlienNumber[0]",1,anum(g("s_anum"))],
     ["Pt1Line6a_FamilyName[0]",1,g("s_last")],["Pt1Line6b_GivenName[0]",1,g("s_first")],
     ["Pt1Line6c_MiddleName[0]",1,g("s_middle")],
-    ["Pt1Line8a_StreetNumberName[0]",1,g("s_street")],["Pt1Line8c_CityOrTown[0]",1,g("s_city")],
-    ["Pt1Line8d_State[0]",1,g("s_state")],["Pt1Line8e_ZipCode[0]",1,g("s_zip")],
-    ["Pt1Line14_DateOfBirth[0]",2,mmddyyyy(g("s_dob"))],
+    ["Pt1Line8_StreetNumberName[0]",1,g("s_street")],["Pt1Line8_CityOrTown[0]",1,g("s_city")],
+    ["Pt1Line8_State[0]",1,g("s_state")],["Pt1Line8_ZipCode[0]",1,g("s_zip")],
+    ["Pt1Line22_DateofBirth[0]",3,mmddyyyy(g("s_dob"))],
   ];
   return {"N-400":N400,"N-600":N600,"I-130":I130,"I-130A":I130A,"I-765":I765,
           "I-864":I864,"I-131":I131,"I-693":I693,"I-485":I485,"G-1450":G1450,
@@ -266,7 +263,7 @@ function resolve(indexRows, suffix, page) {
 export async function fillForm(code, data, blankBytes, fieldIndex) {
   const rows = [...buildMaps(data)[code], ...pathMaps(data)[code], ...historyMaps(data)[code]];
   const indexRows = fieldIndex[code];
-  const doc = await PDFDocument.load(blankBytes, { throwOnInvalidObject: false, updateMetadata: false });
+  const doc = await PDFDocument.load(blankBytes, { throwOnInvalidObject: false, updateMetadata: false, ignoreEncryption: true });
   const form = doc.getForm();
   const helv = await doc.embedFont(StandardFonts.Helvetica);
   let filled = 0;

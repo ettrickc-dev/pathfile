@@ -15,9 +15,9 @@ import N400 from "./N-400.pdf?url";
 import N600 from "./N-600.pdf?url";
 
 // To enable I-90 / I-751 / I-129F: drop the blank here, then uncomment its line.
-// import I90 from "./I-90.pdf?url";
-// import I751 from "./I-751.pdf?url";
-// import I129F from "./I-129F.pdf?url";
+import I90 from "./I-90.pdf?url";
+import I751 from "./I-751.pdf?url";
+import I129F from "./I-129F.pdf?url";
 
 export const BLANK_URLS = {
   "G-1450": G1450,
@@ -30,7 +30,7 @@ export const BLANK_URLS = {
   "I-864": I864,
   "N-400": N400,
   "N-600": N600,
-  // "I-90": I90,
-  // "I-751": I751,
-  // "I-129F": I129F,
+  "I-90": I90,
+  "I-751": I751,
+  "I-129F": I129F,
 };

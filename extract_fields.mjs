@@ -54,7 +54,7 @@ function onValueForCheckbox(field) {
 }
 
 const bytes = readFileSync(pdfPath);
-const doc = await PDFDocument.load(bytes, { throwOnInvalidObject: false, updateMetadata: false });
+const doc = await PDFDocument.load(bytes, { throwOnInvalidObject: false, updateMetadata: false, ignoreEncryption: true });
 const form = doc.getForm();
 const pages = doc.getPages();
 const fields = form.getFields();

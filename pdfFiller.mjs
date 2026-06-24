@@ -57,20 +57,39 @@ function buildMaps(d) {
   const nm = (d.s_marital || "");
   const nb = (d.n_basis || "");
   const nsex = (d.s_sex || "").toLowerCase();
-  const eligBox = nb.startsWith("3 years") ? "Part1_Eligibility[1]"   // B: spouse of USC
-    : nb.startsWith("Military") ? "Part1_Eligibility[4]"               // F: military
-    : "Part1_Eligibility[2]";                                          // A: general (default)
+  const eligBox = nb.startsWith("3 years") ? "Part1_Eligibility[1]"
+    : nb.startsWith("Military") ? "Part1_Eligibility[4]"
+    : "Part1_Eligibility[2]";
   const maritalBox = { Single: "[1]", Married: "[3]", Divorced: "[0]", Widowed: "[2]", Annulled: "[4]", Separated: "[5]" }[nm];
-  const noCrime = d.s_crime !== "Yes" && d.crim !== "yes";
-  const noRemoval = d.s_removal !== "Yes" && d.removal !== "yes";
+  const ethBox = (d.s_ethnicity || "").startsWith("Hispanic") ? "P7_Line1_Ethnicity[1]" : "P7_Line1_Ethnicity[0]";
+  const raceBox = { "White":"[4]", "Black or African American":"[2]", "Asian":"[1]", "American Indian or Alaska Native":"[0]", "Native Hawaiian or Other Pacific Islander":"[3]" }[d.s_race];
+  const eyeBox = { "Brown":"[0]","Blue":"[1]","Green":"[2]","Hazel":"[3]","Gray":"[4]","Black":"[5]","Pink":"[6]","Maroon":"[7]","Unknown/Other":"[8]" }[d.s_eye];
+  const hairBox = { "Bald (No hair)":"[0]","Sandy":"[1]","Red":"[2]","White":"[3]","Gray":"[4]","Blond":"[5]","Brown":"[6]","Black":"[7]","Unknown/Other":"[8]" }[d.s_hair];
+  const wt = String(d.s_weight || "").replace(/\D/g, "");
+  const wt3 = wt ? wt.padStart(3, " ") : "";
+  // Part 9 gates (clean answer applies unless the person flagged the issue)
+  const okClaim = d.s_claimcit !== "Yes";
+  const okTax = d.s_taxes !== "Yes";
+  const okBad = d.s_badacts !== "Yes";
+  const okCrime = d.s_crime !== "Yes" && d.crim !== "yes";
+  const okImm = d.s_immfraud !== "Yes";
+  const okRem = d.s_removal !== "Yes" && d.removal !== "yes";
   const willing = d.s_oath !== "No";
-  const ck = []; // checkbox rows answered "X"
-  // Part 9 — only set when the safe/clean answer applies; "X" checks that specific box.
-  if (noCrime) ["P12_Line16[0]","P12_Line17d[0]","P12_Line17e[0]","P12_Line17f[1]","P12_Line17g[0]","P12_Line17h[0]"].forEach((f)=>ck.push([f,9,"X"]));
-  ["P12_Line18[1]","P12_Line19[1]"].forEach((f)=>ck.push([f,9,"X"]));               // false docs / lied: No
-  if (noRemoval) ["P12_Line20[0]","P12_Line21[0]"].forEach((f)=>ck.push([f,9,"X"])); // removal / removed: No
-  ["P12_Line23[0]","P12_Line24[0]","P12_Line25[0]","P12_Line26a[0]","P12_Line26b[0]","P12_Line26c[0]","P12_Line27[1]","P12_Line28[1]","P12_Line30a[1]"].forEach((f)=>ck.push([f,10,"X"]));
-  if (willing) ["P12_Line31[1]","P12_Line32[0]","P12_Line33[1]","P12_Line34[1]","P12_Line35[0]","P12_Line36[1]","P12_Line37[0]"].forEach((f)=>ck.push([f,10,"X"]));
+  const ck = [];
+  const C = (f, p) => ck.push([f, p, "X"]);
+  if (okClaim) { C("P9_Line1[0]",6); C("P9_Line2[0]",6); }
+  if (okTax) { C("P9_Line3[1]",6); C("P9_Line4[1]",6); }
+  if (okBad) { ["P9_5a[1]","P9_5b[1]"].forEach((f)=>C(f,6));
+    ["P12_6a[0]","P12_6b[1]","P12_6c[0]","P9_Line7a[0]","P11_7d[0]","P9_Line8a[0]","P9_Line8b[0]","P9_Line9[0]","P9_Line10a[0]","P9_Line10b[0]","P9_Line10c[1]","P9_Line11[0]","P9_Line12[0]","P9_Line13[0]","P9_Line14[0]"].forEach((f)=>C(f,7)); }
+  if (okCrime) { ["P9_Line15a[0]","P9_Line15b[0]"].forEach((f)=>C(f,8)); }
+  if (okImm) { ["P11_Line17A[0]","P11_Line17B[0]","P11_Line17C[0]","P12_Line17d[0]","P12_Line17e[0]","P12_Line17f[1]","P12_Line17g[0]","P12_Line17h[0]","P12_Line18[1]","P12_Line19[1]"].forEach((f)=>C(f,9)); }
+  if (okRem) { ["P12_Line20[0]","P12_Line21[0]"].forEach((f)=>C(f,9)); }
+  ["P12_Line23[0]","P12_Line24[0]","P12_Line25[0]"].forEach((f)=>C(f,9));
+  ["P12_Line26a[0]","P12_Line26b[0]","P12_Line26c[0]","P12_Line27[1]","P12_Line28[1]","P12_Line30a[1]"].forEach((f)=>C(f,10));
+  if (willing) ["P12_Line31[1]","P12_Line32[0]","P12_Line33[1]","P12_Line34[1]","P12_Line35[0]","P12_Line36[1]","P12_Line37[0]"].forEach((f)=>C(f,10));
+  // Selective Service (men only)
+  if (nsex==="male" && d.s_ss_lived==="Yes") { C("P9_Line22a[1]",9); ck.push(["Pt9_Line22b"+(d.s_ss_registered==="No"?"[0]":"[1]"),9,"X"]); }
+  else if (nsex==="female") C("P9_Line22a[0]",9);
   const N400 = [
     [eligBox, 1, "X"],
     ["P2_Line1_FamilyName[0]",1,g("s_last")],["P2_Line1_GivenName[0]",1,g("s_first")],["P2_Line1_MiddleName[0]",1,g("s_middle")],
@@ -81,17 +100,35 @@ function buildMaps(d) {
     ["P2_Line9_DateBecamePermanentResident[0]",2,mmddyyyy(g("s_lprdate"))],
     ["P2_Line10_CountryOfBirth[0]",2,g("s_cob")],["P2_Line11_CountryOfNationality[0]",2,g("s_coc")],
     ["Line12b_SSN[0]",2,anum(g("s_ssn"))],
-    ["P2_Line34_NameChange[0]",2,"X"],        // name change: No
-    ["P2_Line10_claimdisability[0]",2,"X"],   // parents USC before 18: No
-    ["P2_Line11_claimdisability[0]",2,"X"],   // disability accommodation: No
-    ["Line12a_Checkbox[0]",2,"X"],            // SSA card request: No
+    ["P2_Line34_NameChange[0]",2,"X"],["P2_Line10_claimdisability[0]",2,"X"],
+    ["P2_Line11_claimdisability[0]",2,"X"],["Line12a_Checkbox[0]",2,"X"],
+    // Part 3 — biographic
+    [ethBox,3,"X"],
+    ...(raceBox ? [["P7_Line2_Race"+raceBox,3,"X"]] : []),
+    ["P7_Line3_HeightFeet[0]",3,g("s_height_ft")],["P7_Line3_HeightInches[0]",3,g("s_height_in")],
+    ...(wt3 ? [["P7_Line4_Pounds1[0]",3,wt3[0].trim()],["P7_Line4_Pounds2[0]",3,wt3[1].trim()],["P7_Line4_Pounds3[0]",3,wt3[2]]] : []),
+    ...(eyeBox ? [["P7_Line5_Eye"+eyeBox,3,"X"]] : []),
+    ...(hairBox ? [["P7_Line6_Hair"+hairBox,3,"X"]] : []),
+    // Part 4 — current address + dates + mailing-same
     ["P4_Line1_StreetName[0]",3,g("s_street")],["P4_Line1_City[0]",3,g("s_city")],
     ["P4_Line1_State[0]",3,g("s_state")],["P4_Line1_ZipCode[0]",3,g("s_zip")],
+    ["P4_Line1_DatesofResidence[0]",3,mmddyyyy(g("s_movein"))],
+    [(d.s_mailsame||"").startsWith("No") ? "Pt3_Line2a_Checkbox[0]" : "Pt3_Line2a_Checkbox[1]",3,"X"],
+    // Part 5 — marital + spouse
     ...(maritalBox ? [["P10_Line1_MaritalStatus"+maritalBox,4,"X"]] : []),
     ...(nm==="Married" ? [
       ["P10_Line4a_FamilyName[0]",4,g("sp_last")],["P10_Line4a_GivenName[0]",4,g("sp_first")],
       ["P10_Line4a_MiddleName[0]",4,g("sp_middle")],["P10_Line4d_DateofBirth[0]",4,mmddyyyy(g("sp_dob"))],
+      ["P7_Line2_Forces[0]",4,"X"],
     ] : []),
+    // Part 6 — children count
+    ["P11_Line1_TotalChildren[0]",5,g("s_children")],
+    // Part 7 — current employment
+    ["P7_EmployerName1[0]",5,g("s_employer")],["P7_OccupationFieldStudy1[0]",5,g("s_occupation")],
+    ["P7_City1[0]",5,g("s_emp_city")],["P7_State1[0]",5,g("s_emp_state")],
+    ["P7_ZipCode1[0]",5,g("s_emp_zip")],["P7_From1[0]",5,mmddyyyy(g("s_emp_from"))],
+    ...(g("s_emp_city") ? [["P7_Country1[0]",5,"United States"]] : []),
+    // Part 11 — contact
     ["P12_Line3_Telephone[0]",11,g("s_phone")],["P12_Line5_Email[0]",11,g("s_email")],
     ...ck,
   ];

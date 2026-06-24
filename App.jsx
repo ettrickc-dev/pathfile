@@ -460,14 +460,29 @@ function intakeSections(result) {
     ],
   });
 
-  // N-400 needs more about the applicant: sex, resident date, marital, spouse, background.
+  // N-400 — full question set so every section of the form can be completed.
   if (has("N-400")) {
     sections.push({
-      id: "n400",
+      id: "n400bio",
       title: "More about you (for the citizenship form)",
       fields: [
         FIELD("s_sex", "Sex", { type: "select", options: ["Male", "Female"], req: true }),
         FIELD("s_lprdate", "Date you became a permanent resident", { type: "date", req: true }),
+        FIELD("s_ethnicity", "Ethnicity", { type: "select", options: ["Not Hispanic or Latino", "Hispanic or Latino"], req: true }),
+        FIELD("s_race", "Race (pick the closest; you can mark more by hand)", { type: "select", options: ["White", "Black or African American", "Asian", "American Indian or Alaska Native", "Native Hawaiian or Other Pacific Islander"], req: true }),
+        FIELD("s_height_ft", "Height — feet", { type: "select", options: ["4", "5", "6", "7"], req: true }),
+        FIELD("s_height_in", "Height — inches", { type: "select", options: ["0","1","2","3","4","5","6","7","8","9","10","11"], req: true }),
+        FIELD("s_weight", "Weight (pounds)", { type: "number", req: true }),
+        FIELD("s_eye", "Eye color", { type: "select", options: ["Black","Blue","Brown","Gray","Green","Hazel","Maroon","Pink","Unknown/Other"], req: true }),
+        FIELD("s_hair", "Hair color", { type: "select", options: ["Bald (No hair)","Black","Blond","Brown","Gray","Red","Sandy","White","Unknown/Other"], req: true }),
+      ],
+    });
+    sections.push({
+      id: "n400res",
+      title: "Your residence & marital status",
+      fields: [
+        FIELD("s_movein", "Date you moved to your current address", { type: "date" }),
+        FIELD("s_mailsame", "Is your current address also your mailing address?", { type: "select", options: ["Yes — same", "No — different"] }),
         FIELD("s_marital", "Current marital status", { type: "select", options: ["Single", "Married", "Divorced", "Widowed", "Separated", "Annulled"], req: true }),
         FIELD("sp_first", "Spouse's given name (if married)"),
         FIELD("sp_last", "Spouse's family name (if married)"),
@@ -476,13 +491,39 @@ function intakeSections(result) {
       ],
     });
     sections.push({
+      id: "n400emp",
+      title: "Your current employment (or school)",
+      note: "Enter your most recent employer. If you are not working, type Unemployed or Retired as the employer name.",
+      fields: [
+        FIELD("s_employer", "Current employer or school name", { wide: true, req: true }),
+        FIELD("s_occupation", "Your occupation or field of study"),
+        FIELD("s_emp_city", "Employer city/town"),
+        FIELD("s_emp_state", "Employer state (2-letter)", { ph: "NY" }),
+        FIELD("s_emp_zip", "Employer ZIP code"),
+        FIELD("s_emp_from", "Date you started", { type: "date" }),
+      ],
+    });
+    sections.push({
+      id: "n400kids",
+      title: "Children & Selective Service",
+      fields: [
+        FIELD("s_children", "Number of your children under 18", { type: "number" }),
+        FIELD("s_ss_lived", "Men only: did you live in the U.S. between ages 18 and 26?", { type: "select", options: ["No / not applicable", "Yes"] }),
+        FIELD("s_ss_registered", "Men only: did you register with the Selective Service?", { type: "select", options: ["Yes", "No"] }),
+      ],
+    });
+    sections.push({
       id: "n400bg",
       title: "Background (answer honestly — these go on the form)",
-      note: "Most applicants answer No to the first two and Yes to the oath. If you answer Yes to a crime or removal question, your case should be reviewed by an attorney before filing.",
+      note: "Most applicants answer No to all of these and Yes to the oath. If you answer Yes to any item, that part is left blank for an attorney to complete with you before filing.",
       fields: [
         FIELD("s_crime", "Have you EVER been arrested, cited, detained, or charged with any crime?", { type: "select", options: ["No", "Yes"], req: true }),
-        FIELD("s_removal", "Have you EVER been in removal, deportation, or rescission proceedings?", { type: "select", options: ["No", "Yes"], req: true }),
-        FIELD("s_oath", "Are you willing to take the full Oath of Allegiance and its duties (support the Constitution, bear arms or do other service if required by law)?", { type: "select", options: ["Yes", "No"], req: true }),
+        FIELD("s_removal", "Have you EVER been in removal/deportation proceedings, or been removed?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_claimcit", "Have you EVER claimed to be a U.S. citizen, or voted in a U.S. election?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_taxes", "Do you owe overdue U.S. taxes, or have you filed as a 'nonresident'?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_badacts", "Have you EVER been involved with weapons/armed groups, persecution, torture, or harming others?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_immfraud", "Have you EVER lied to immigration, used false documents, helped someone enter illegally, married for immigration, or committed fraud?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_oath", "Are you willing to take the full Oath of Allegiance and its duties (support the Constitution; bear arms or other service if the law requires)?", { type: "select", options: ["Yes", "No"], req: true }),
       ],
     });
   }

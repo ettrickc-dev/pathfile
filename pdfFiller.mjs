@@ -27,26 +27,49 @@ const hdate = (v) => {
    scripts/extract_fields.mjs. See HOW_TO_ADD_OR_UPDATE_A_FORM.md. */
 function buildMaps(d) {
   const g = (k) => d[k];
+  // ---- I-130: comprehensive core (relationship + both spouses) ----
+  const p_sex = (d.p_sex || "").toLowerCase();
   const I130 = [
-    ["Pt2Line4a_FamilyName[0]",1,g("p_last")],["Pt2Line4b_GivenName[0]",1,g("p_first")],
-    ["Pt2Line4c_MiddleName[0]",1,g("p_middle")],["Pt2Line1_AlienNumber[0]",1,anum(g("p_anum"))],
-    ["Pt2Line11_SSN[0]",1,g("p_ssn")],["Pt2Line8_DateofBirth[0]",2,mmddyyyy(g("p_dob"))],
-    ["Pt2Line12_StreetNumberName[0]",2,g("p_street")],["Pt2Line12_CityOrTown[0]",2,g("p_city")],
-    ["Pt2Line12_State[0]",2,g("p_state")],["Pt2Line12_ZipCode[0]",2,g("p_zip")],
-    ["Pt4Line4a_FamilyName[0]",5,g("s_last")],["Pt4Line4b_GivenName[0]",5,g("s_first")],
-    ["Pt4Line4c_MiddleName[0]",5,g("s_middle")],["Pt4Line3_SSN[0]",5,g("s_ssn")],
-    ["Pt4Line8_CountryOfBirth[0]",5,g("s_cob")],["Pt4Line9_DateOfBirth[0]",5,mmddyyyy(g("s_dob"))],
+    ["Pt1Line1_Spouse[0]",1,"X"],["Pt1Line3_No[0]",1,"X"],   // relationship: spouse; not by adoption
+    // Petitioner (Part 2)
+    ["Pt2Line4a_FamilyName[0]",1,g("p_last")],["Pt2Line4b_GivenName[0]",1,g("p_first")],["Pt2Line4c_MiddleName[0]",1,g("p_middle")],
+    ["Pt2Line1_AlienNumber[0]",1,anum(g("p_anum"))],["Pt2Line11_SSN[0]",1,anum(g("p_ssn"))],
+    ["Pt2Line8_DateofBirth[0]",2,mmddyyyy(g("p_dob"))],
+    ["Pt2Line6_CityTownOfBirth[0]",2,g("p_cityofbirth")],["Pt2Line7_CountryofBirth[0]",2,g("p_cob")],
+    [p_sex==="female" ? "Pt2Line9_Female[0]" : "Pt2Line9_Male[0]",2,"X"],
+    ["Pt2Line14_StreetNumberName[0]",2,g("p_street")],["Pt2Line14_CityOrTown[0]",2,g("p_city")],
+    ["Pt2Line14_State[0]",2,g("p_state")],["Pt2Line14_ZipCode[0]",2,g("p_zip")],
+    // Beneficiary (Part 4)
+    ["Pt4Line4a_FamilyName[0]",5,g("s_last")],["Pt4Line4b_GivenName[0]",5,g("s_first")],["Pt4Line4c_MiddleName[0]",5,g("s_middle")],
+    ["Pt4Line1_AlienNumber[0]",5,anum(g("s_anum"))],["Pt4Line3_SSN[0]",5,anum(g("s_ssn"))],
+    ["Pt4Line7_CityTownOfBirth[0]",5,g("s_cityofbirth")],["Pt4Line8_CountryOfBirth[0]",5,g("s_cob")],
+    ["Pt4Line9_DateOfBirth[0]",5,mmddyyyy(g("s_dob"))],
+    ["Pt4Line11_StreetNumberName[0]",5,g("s_street")],["Pt4Line11_CityOrTown[0]",5,g("s_city")],
+    ["Pt4Line11_State[0]",5,g("s_state")],["Pt4Line11_ZipCode[0]",5,g("s_zip")],
+    ["Pt4Line53_DaytimePhoneNumber[0]",10,g("s_phone")],
   ];
+  // ---- I-765: comprehensive map ----
+  const i765marital = { Single:"[2]", Married:"[3]", Divorced:"[1]", Widowed:"[0]" }[d.s_marital];
+  const isAOS765 = d.filing_path === "marriage_aos";
+  const catL = isAOS765 ? "c" : (d.s_cat_letter || "");
+  const catN = isAOS765 ? "9" : (d.s_cat_number || "");
   const I765 = [
-    ["Line1a_FamilyName[0]",1,g("s_last")],["Line1b_GivenName[0]",1,g("s_first")],
-    ["Line1c_MiddleName[0]",1,g("s_middle")],["Line7_AlienNumber[0]",2,anum(g("s_anum"))],
-    ["Line12b_SSN[0]",2,g("s_ssn")],["Line4b_StreetNumberName[0]",2,g("s_street")],
-    ["Pt2Line5_CityOrTown[0]",2,g("s_city")],["Pt2Line5_State[0]",2,g("s_state")],
-    ["Pt2Line5_ZipCode[0]",2,g("s_zip")],
+    ["Part1_Checkbox[0]",1,"X"],          // reason: Initial permission to accept employment
+    ["Line1a_FamilyName[0]",1,g("s_last")],["Line1b_GivenName[0]",1,g("s_first")],["Line1c_MiddleName[0]",1,g("s_middle")],
+    ["Line7_AlienNumber[0]",2,anum(g("s_anum"))],
+    ["Line4b_StreetNumberName[0]",2,g("s_street")],["Pt2Line5_CityOrTown[0]",2,g("s_city")],
+    ["Pt2Line5_State[0]",2,g("s_state")],["Pt2Line5_ZipCode[0]",2,g("s_zip")],
+    ...(i765marital ? [["Line10_Checkbox"+i765marital,2,"X"]] : []),
+    ["Line12b_SSN[0]",2,anum(g("s_ssn"))],
+    ["Line17a_CountryOfBirth[0]",2,g("s_coc")],        // item 16: country of citizenship
+    ["Line18a_CityTownOfBirth[0]",3,g("s_cityofbirth")],["Line18c_CountryOfBirth[0]",3,g("s_cob")],
+    ["Line19_DOB[0]",3,mmddyyyy(g("s_dob"))],
     ["Line20a_I94Number[0]",3,g("e_i94")],["Line20b_Passport[0]",3,g("e_passport")],
     ["Line20d_CountryOfIssuance[0]",3,g("e_passcountry")],["Line21_DateOfLastEntry[0]",3,mmddyyyy(g("e_lastentry"))],
     ["place_entry[0]",3,g("e_place")],["Line23_StatusLastEntry[0]",3,g("e_status")],
     ["Line24_CurrentStatus[0]",3,g("e_curstatus")],
+    ["section_1[0]",3,catL],["section_2[0]",3,catN],   // eligibility category, e.g. (c)(9)
+    ["Pt3Line3_DaytimePhoneNumber1[0]",4,g("s_phone")],["Pt3Line5_Email[0]",4,g("s_email")],
   ];
   const N600 = [
     ["Pt1Line1_FamilyName[0]",1,g("s_last")],["Pt1Line1_GivenName[0]",1,g("s_first")],
@@ -166,15 +189,35 @@ function buildMaps(d) {
     ["Pt1Line2_StreetNumberName[0]",1,g("s_street")],["P1Line2_CityOrTown[0]",1,g("s_city")],
     ["P1Line2_State[0]",1,g("s_state")],["P1Line2_ZipCode[0]",1,g("s_zip")],
   ];
+  // ---- I-485: applicant identity core + category + Part 8 battery ----
+  const s_sex485 = (d.s_sex || "").toLowerCase();
+  const marital485 = { Single:"[1]", Married:"[3]", Divorced:"[0]", Widowed:"[2]" }[d.s_marital];
+  const i485okImm = d.s_immfraud !== "Yes";
+  const i485okRem = d.s_removal !== "Yes" && d.removal !== "yes";
+  const i485okCrime = d.s_crime !== "Yes" && d.crim !== "yes";
+  const i485okSec = d.s_badacts !== "Yes";
+  const p8 = [];
+  const P8 = (f) => p8.push([f, 14, "X"]);
+  // Immigration/status grounds (No)
+  if (i485okImm) ["Pt8Line1_YesNo[0]","Pt8Line13_YesNo[0]","Pt8Line17_YesNo[1]","Pt8Line23_YesNo[0]","Pt8Line24a_YesNo[1]"].forEach(P8);
+  if (i485okRem) ["Pt8Line18_YesNo[1]","Pt8Line19_YesNo[0]","Pt8Line20_YesNo[1]"].forEach(P8);
+  if (i485okCrime) ["Pt8Line22_YesNo[1]","Pt8Line25_YesNo[0]","Pt8Line26_YesNo[0]","Pt8Line27_YesNo[0]","Pt8Line28_YesNo[0]","Pt8Line30_YesNo[0]","Pt8Line31_YesNo[1]","Pt8Line32_YesNo[1]","Pt8Line33_YesNo[1]","Pt8Line34_YesNo[0]","Pt8Line35a_YesNo[1]","Pt8Line36_YesNo[0]","Pt8Line37_YesNo[0]","Pt8Line38_YesNo[1]","Pt8Line41_YesNo[1]"].forEach(P8);
+  if (i485okSec) ["Pt8Line42c_YesNo[0]","Pt8Line42d_YesNo[1]","Pt8Line43a_YesNo[0]","Pt8Line43b_YesNo[1]","Pt8Line43c_YesNo[1]","Pt8Line43d_YesNo[1]","Pt8Line43e_YesNo[1]","Pt8Line43fYesNo[1]","Pt8Line43g_YesNo[1]","Pt8Line43h_YesNo[0]","Pt8Line43i_YesNo[0]","Pt8Line44_YesNo[1]","Pt8Line45_YesNo[0]","Pt8Line46_YesNo[1]","Pt8Line47_YesNo[0]","Pt8Line48_YesNo[0]","Pt8Line49_YesNo[1]","Pt8Line50_YesNo[0]","Pt8Line51_YesNo[1]","Pt8Line52_YesNo[0]","Pt8Line53a_YesNo[1]","Pt8Line53b_YesNo[1]","Pt8Line53c_YesNo[1]","Pt8Line53d_YesNo[0]","Pt8Line54_YesNo[0]","Pt8Line55_YesNo[1]"].forEach(P8);
   const I485 = [
     ["Pt1Line1_FamilyName[0]",1,g("s_last")],["Pt1Line1_GivenName[0]",1,g("s_first")],
     ["Pt1Line1_MiddleName[0]",1,g("s_middle")],["AlienNumber[0]",1,anum(g("s_anum"))],
     ["Pt1Line3_DOB[0]",1,mmddyyyy(g("s_dob"))],["Pt1Line7_CountryOfBirth[0]",2,g("s_cob")],
     ["Pt1Line8_CountryofCitizenshipNationality[0]",2,g("s_coc")],
+    [s_sex485==="female" ? "Pt1Line6_CB_Sex[0]" : "Pt1Line6_CB_Sex[1]",2,"X"],
     ["Pt1Line9_USCISAccountNumber[0]",2,g("s_uscis")],["Pt1Line10_PassportNum[0]",2,g("e_passport")],
     ["Pt1Line10_DateofArrival[0]",2,mmddyyyy(g("e_lastentry"))],["Pt1Line10_CityTown[0]",2,g("e_place")],
+    ["Pt1Line19_SSN[0]",4,anum(g("s_ssn"))],
+    ...(marital485 ? [["Pt6Line1_MaritalStatus"+marital485,10,"X"]] : []),
     ["P1Line12_I94[0]",3,g("e_i94")],["Pt1Line12_Status[0]",3,g("e_status")],
     ["Pt1Line14_Status[0]",3,g("e_curstatus")],
+    // Part 2 — category: Spouse of a U.S. citizen, principal applicant
+    ["Pt2Line3a_CB[0]",5,"X"],["Pt2Line2_CB[0]",5,"X"],
+    ...p8,
   ];
   const G1450 = [
     ["CCHolderFamilyName[0]",1,g("cc_last")||g("p_last")],["CCHolderGivenName[0]",1,g("cc_first")||g("p_first")],
@@ -185,14 +228,45 @@ function buildMaps(d) {
     ["Email[0]",1,g("cc_email")||g("p_email")],
   ];
   /* ---- NEW FORMS — real field maps (verified against the official blanks) ---- */
+  // ---- I-90: comprehensive map ----
+  const i90reason = d.r90_reason || "";
+  const reasonBox = i90reason==="lost" ? "P2_checkbox2[5]"        // 2a lost/stolen/destroyed
+    : i90reason==="expired" ? "P2_checkbox2[1]"                   // 2f expired/expiring
+    : i90reason==="namechange" ? "P2_checkbox2[0]"               // 2e name/bio change
+    : i90reason==="error" ? "P2_checkbox2[4]"                    // 2d DHS error
+    : "P2_checkbox2[1]";                                          // default: expired
+  const i90sex = (d.s_sex || "").toLowerCase();
+  const i90eth = (d.s_ethnicity || "").startsWith("Hispanic") ? "P3_checkbox6[1]" : "P3_checkbox6[0]";
+  const i90race = { "White":"P3_checkbox7_White[0]","Black or African American":"P3_checkbox7_Black[0]","Asian":"P3_checkbox7_Asian[0]","American Indian or Alaska Native":"P3_checkbox7_Indian[0]","Native Hawaiian or Other Pacific Islander":"P3_checkbox7_Hawaiian[0]" }[d.s_race];
+  const i90eye = { "Blue":"[0]","Green":"[1]","Hazel":"[2]","Pink":"[3]","Maroon":"[4]","Brown":"[5]","Black":"[6]","Unknown/Other":"[7]","Gray":"[8]" }[d.s_eye];
+  const i90hair = { "Bald (No hair)":"[0]","Blond":"[1]","Gray":"[2]","Sandy":"[3]","Unknown/Other":"[4]","White":"[5]","Red":"[6]","Brown":"[7]","Black":"[8]" }[d.s_hair];
+  const i90wt = String(d.s_weight || "").replace(/\D/g, ""); const i90wt3 = i90wt ? i90wt.padStart(3, " ") : "";
+  const i90okRem = d.s_removal !== "Yes" && d.removal !== "yes";
   const I90 = [
     ["P1_Line1_AlienNumber[0]",1,anum(g("s_anum"))],
-    ["P1_Line3a_FamilyName[0]",1,g("s_last")],["P1_Line3b_GivenName[0]",1,g("s_first")],
-    ["P1_Line3c_MiddleName[0]",1,g("s_middle")],
+    ["P1_Line3a_FamilyName[0]",1,g("s_last")],["P1_Line3b_GivenName[0]",1,g("s_first")],["P1_Line3c_MiddleName[0]",1,g("s_middle")],
+    [i90reason==="namechange" ? "P1_checkbox4[0]" : "P1_checkbox4[1]",1,"X"],   // name changed? Yes/No
     ["P1_Line6b_StreetNumberName[0]",1,g("s_street")],["P1_Line6d_CityOrTown[0]",1,g("s_city")],
     ["P1_Line6e_State[0]",1,g("s_state")],["P1_Line6f_ZipCode[0]",1,g("s_zip")],
     ["P1_Line9_DateOfBirth[0]",2,mmddyyyy(g("s_dob"))],
-    ["P1_Line11_CountryofBirth[0]",2,g("s_cob")],["P1_Line16_SSN[0]",2,g("s_ssn")],
+    ["P1_Line10_CityTownOfBirth[0]",2,g("s_cityofbirth")],["P1_Line11_CountryofBirth[0]",2,g("s_cob")],
+    ["P1_Line12_MotherGivenName[0]",2,g("s_mother")],["P1_Line13_FatherGivenName[0]",2,g("s_father")],
+    ["P1_Line14_ClassOfAdmission[0]",2,g("s_coa")],["P1_Line15_DateOfAdmission[0]",2,mmddyyyy(g("s_lprdate"))],
+    ["P1_Line16_SSN[0]",2,anum(g("s_ssn"))],
+    [i90sex==="female" ? "P1_Line8_female[0]" : "P1_Line8_male[0]",2,"X"],
+    ["P2_checkbox1[0]",2,"X"],            // status: Lawful Permanent Resident
+    [reasonBox,2,"X"],                    // reason for application
+    ...(i90okRem ? [["P3_checkbox4[0]",3,"X"]] : []),  // exclusion/removal: No
+    ["P3_checkbox5[0]",3,"X"],            // Form I-407 abandonment: No
+    [i90eth,3,"X"],
+    ...(i90race ? [[i90race,3,"X"]] : []),
+    ["P3_Line8_HeightFeet[0]",3,g("s_height_ft")],["P3_Line8_HeightInches[0]",3,g("s_height_in")],
+    ...(i90wt3 ? [["P3_Line9_HeightInches1[0]",3,i90wt3[0].trim()],["P3_Line9_HeightInches2[0]",3,i90wt3[1].trim()],["P3_Line9_HeightInches3[0]",3,i90wt3[2]]] : []),
+    ...(i90eye ? [["P3_checkbox10"+i90eye,3,"X"]] : []),
+    ...(i90hair ? [["P3_checkbox11"+i90hair,3,"X"]] : []),
+    ["P4_checkbox1[0]",3,"X"],            // accommodations: No
+    ["P5_Checkbox1a[0]",4,"X"],           // can read & understand English
+    ["P5_Line3_DaytimePhoneNumber[0]",4,g("s_phone")],["P5_Line5_EmailAddress[0]",4,g("s_email")],
   ];
   const I751 = [
     ["Pt1Line1a_FamilyName[0]",1,g("s_last")],["Pt1Line1b_GivenName[0]",1,g("s_first")],

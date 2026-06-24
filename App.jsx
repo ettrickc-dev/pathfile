@@ -528,6 +528,77 @@ function intakeSections(result) {
     });
   }
 
+  // I-90 — full question set.
+  if (has("I-90")) {
+    sections.push({
+      id: "i90",
+      title: "More about you (for the green card replacement)",
+      note: "Most of this is on your current or expired green card.",
+      fields: [
+        FIELD("s_sex", "Sex", { type: "select", options: ["Male", "Female"], req: true }),
+        FIELD("s_cityofbirth", "City or town of birth", { req: true }),
+        FIELD("s_lprdate", "Date you became a permanent resident (date of admission)", { type: "date", req: true }),
+        FIELD("s_coa", "Class of admission (the code on your green card, e.g. IR1)", { ph: "IR1" }),
+        FIELD("s_mother", "Mother's first name"),
+        FIELD("s_father", "Father's first name"),
+        FIELD("s_ethnicity", "Ethnicity", { type: "select", options: ["Not Hispanic or Latino", "Hispanic or Latino"], req: true }),
+        FIELD("s_race", "Race", { type: "select", options: ["White", "Black or African American", "Asian", "American Indian or Alaska Native", "Native Hawaiian or Other Pacific Islander"], req: true }),
+        FIELD("s_height_ft", "Height — feet", { type: "select", options: ["4", "5", "6", "7"], req: true }),
+        FIELD("s_height_in", "Height — inches", { type: "select", options: ["0","1","2","3","4","5","6","7","8","9","10","11"], req: true }),
+        FIELD("s_weight", "Weight (pounds)", { type: "number", req: true }),
+        FIELD("s_eye", "Eye color", { type: "select", options: ["Black","Blue","Brown","Gray","Green","Hazel","Maroon","Pink","Unknown/Other"], req: true }),
+        FIELD("s_hair", "Hair color", { type: "select", options: ["Bald (No hair)","Black","Blond","Brown","Gray","Red","Sandy","White","Unknown/Other"], req: true }),
+        FIELD("s_removal", "Have you ever been in exclusion, deportation, or removal proceedings?", { type: "select", options: ["No", "Yes"], req: true }),
+      ],
+    });
+  }
+
+  // I-765 — extra details (place of birth, marital, eligibility category).
+  if (has("I-765")) {
+    sections.push({
+      id: "i765",
+      title: "More about you (for the work permit)",
+      fields: [
+        FIELD("s_cityofbirth", "City or town of birth", { req: true }),
+        FIELD("s_marital", "Current marital status", { type: "select", options: ["Single", "Married", "Divorced", "Widowed"], req: true }),
+        FIELD("s_cat_letter", "Work-permit category letter (leave blank if applying with a marriage green card)", { ph: "c" }),
+        FIELD("s_cat_number", "Work-permit category number", { ph: "9" }),
+      ],
+    });
+  }
+
+  // I-485 background screen — drives the Part 8 inadmissibility battery.
+  if (has("I-485")) {
+    sections.push({
+      id: "i485bg",
+      title: "Background (answer honestly — these go on the green-card form)",
+      note: "Most applicants answer No to all four. If you answer Yes to any, that whole section is left blank for an attorney to complete with you.",
+      fields: [
+        FIELD("s_immfraud", "Have you EVER overstayed, worked without permission, lied to immigration, or used false documents?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_removal", "Have you EVER been in removal/deportation/exclusion proceedings or ordered removed?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_crime", "Have you EVER been arrested, charged, or convicted of any crime, or involved with drugs/prostitution/trafficking?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_badacts", "Have you EVER been involved with weapons/terrorist/armed groups, persecution, genocide, or torture?", { type: "select", options: ["No", "Yes"], req: true }),
+      ],
+    });
+  }
+
+  // Marriage green-card set (I-130 + I-485) needs both spouses' birth/sex details.
+  if (has("I-130") || has("I-485")) {
+    sections.push({
+      id: "marriage_details",
+      title: "Marriage case — a few more details",
+      fields: [
+        FIELD("s_sex", "Immigrant spouse — sex", { type: "select", options: ["Male", "Female"], req: true }),
+        FIELD("s_cityofbirth", "Immigrant spouse — city/town of birth", { req: true }),
+        FIELD("s_marital", "Immigrant spouse — marital status", { type: "select", options: ["Single", "Married", "Divorced", "Widowed"], req: true }),
+        FIELD("p_middle", "U.S. spouse — middle name"),
+        FIELD("p_sex", "U.S. spouse — sex", { type: "select", options: ["Male", "Female"], req: true }),
+        FIELD("p_cob", "U.S. spouse — country of birth", { ph: "United States" }),
+        FIELD("p_cityofbirth", "U.S. spouse — city/town of birth"),
+      ],
+    });
+  }
+
   // Entry / status — needed for adjustment + work permit.
   if (has("I-485") || has("I-765")) {
     sections.push({

@@ -460,6 +460,33 @@ function intakeSections(result) {
     ],
   });
 
+  // N-400 needs more about the applicant: sex, resident date, marital, spouse, background.
+  if (has("N-400")) {
+    sections.push({
+      id: "n400",
+      title: "More about you (for the citizenship form)",
+      fields: [
+        FIELD("s_sex", "Sex", { type: "select", options: ["Male", "Female"], req: true }),
+        FIELD("s_lprdate", "Date you became a permanent resident", { type: "date", req: true }),
+        FIELD("s_marital", "Current marital status", { type: "select", options: ["Single", "Married", "Divorced", "Widowed", "Separated", "Annulled"], req: true }),
+        FIELD("sp_first", "Spouse's given name (if married)"),
+        FIELD("sp_last", "Spouse's family name (if married)"),
+        FIELD("sp_middle", "Spouse's middle name (if married)"),
+        FIELD("sp_dob", "Spouse's date of birth (if married)", { type: "date" }),
+      ],
+    });
+    sections.push({
+      id: "n400bg",
+      title: "Background (answer honestly — these go on the form)",
+      note: "Most applicants answer No to the first two and Yes to the oath. If you answer Yes to a crime or removal question, your case should be reviewed by an attorney before filing.",
+      fields: [
+        FIELD("s_crime", "Have you EVER been arrested, cited, detained, or charged with any crime?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_removal", "Have you EVER been in removal, deportation, or rescission proceedings?", { type: "select", options: ["No", "Yes"], req: true }),
+        FIELD("s_oath", "Are you willing to take the full Oath of Allegiance and its duties (support the Constitution, bear arms or do other service if required by law)?", { type: "select", options: ["Yes", "No"], req: true }),
+      ],
+    });
+  }
+
   // Entry / status — needed for adjustment + work permit.
   if (has("I-485") || has("I-765")) {
     sections.push({

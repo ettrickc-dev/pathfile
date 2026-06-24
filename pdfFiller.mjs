@@ -53,11 +53,47 @@ function buildMaps(d) {
     ["Pt1Line1_MiddleName[0]",1,g("s_middle")],["Line1_AlienNumber[0]",1,anum(g("s_anum"))],
     ["P2_Line8_DateOfBirth[0]",2,mmddyyyy(g("s_dob"))],["P2_Line10_CountryOfBirth[0]",2,g("s_cob")],
   ];
+  // ---- N-400: comprehensive map ----
+  const nm = (d.s_marital || "");
+  const nb = (d.n_basis || "");
+  const nsex = (d.s_sex || "").toLowerCase();
+  const eligBox = nb.startsWith("3 years") ? "Part1_Eligibility[1]"   // B: spouse of USC
+    : nb.startsWith("Military") ? "Part1_Eligibility[4]"               // F: military
+    : "Part1_Eligibility[2]";                                          // A: general (default)
+  const maritalBox = { Single: "[1]", Married: "[3]", Divorced: "[0]", Widowed: "[2]", Annulled: "[4]", Separated: "[5]" }[nm];
+  const noCrime = d.s_crime !== "Yes" && d.crim !== "yes";
+  const noRemoval = d.s_removal !== "Yes" && d.removal !== "yes";
+  const willing = d.s_oath !== "No";
+  const ck = []; // checkbox rows answered "X"
+  // Part 9 — only set when the safe/clean answer applies; "X" checks that specific box.
+  if (noCrime) ["P12_Line16[0]","P12_Line17d[0]","P12_Line17e[0]","P12_Line17f[1]","P12_Line17g[0]","P12_Line17h[0]"].forEach((f)=>ck.push([f,9,"X"]));
+  ["P12_Line18[1]","P12_Line19[1]"].forEach((f)=>ck.push([f,9,"X"]));               // false docs / lied: No
+  if (noRemoval) ["P12_Line20[0]","P12_Line21[0]"].forEach((f)=>ck.push([f,9,"X"])); // removal / removed: No
+  ["P12_Line23[0]","P12_Line24[0]","P12_Line25[0]","P12_Line26a[0]","P12_Line26b[0]","P12_Line26c[0]","P12_Line27[1]","P12_Line28[1]","P12_Line30a[1]"].forEach((f)=>ck.push([f,10,"X"]));
+  if (willing) ["P12_Line31[1]","P12_Line32[0]","P12_Line33[1]","P12_Line34[1]","P12_Line35[0]","P12_Line36[1]","P12_Line37[0]"].forEach((f)=>ck.push([f,10,"X"]));
   const N400 = [
-    ["Line2_FamilyName1[0]",1,g("s_last")],["Line3_GivenName1[0]",1,g("s_first")],
-    ["Line3_MiddleName1[0]",1,g("s_middle")],["Line1_AlienNumber[0]",1,anum(g("s_anum"))],
-    ["Line12b_SSN[0]",2,g("s_ssn")],["P2_Line8_DateOfBirth[0]",2,mmddyyyy(g("s_dob"))],
-    ["P2_Line10_CountryOfBirth[0]",2,g("s_cob")],
+    [eligBox, 1, "X"],
+    ["P2_Line1_FamilyName[0]",1,g("s_last")],["P2_Line1_GivenName[0]",1,g("s_first")],["P2_Line1_MiddleName[0]",1,g("s_middle")],
+    ["Line2_FamilyName1[0]",1,g("s_other")],
+    ["Line1_AlienNumber[0]",1,anum(g("s_anum"))],
+    [nsex==="female"?"P2_Line7_Gender[1]":"P2_Line7_Gender[0]",2,"X"],
+    ["P2_Line8_DateOfBirth[0]",2,mmddyyyy(g("s_dob"))],
+    ["P2_Line9_DateBecamePermanentResident[0]",2,mmddyyyy(g("s_lprdate"))],
+    ["P2_Line10_CountryOfBirth[0]",2,g("s_cob")],["P2_Line11_CountryOfNationality[0]",2,g("s_coc")],
+    ["Line12b_SSN[0]",2,anum(g("s_ssn"))],
+    ["P2_Line34_NameChange[0]",2,"X"],        // name change: No
+    ["P2_Line10_claimdisability[0]",2,"X"],   // parents USC before 18: No
+    ["P2_Line11_claimdisability[0]",2,"X"],   // disability accommodation: No
+    ["Line12a_Checkbox[0]",2,"X"],            // SSA card request: No
+    ["P4_Line1_StreetName[0]",3,g("s_street")],["P4_Line1_City[0]",3,g("s_city")],
+    ["P4_Line1_State[0]",3,g("s_state")],["P4_Line1_ZipCode[0]",3,g("s_zip")],
+    ...(maritalBox ? [["P10_Line1_MaritalStatus"+maritalBox,4,"X"]] : []),
+    ...(nm==="Married" ? [
+      ["P10_Line4a_FamilyName[0]",4,g("sp_last")],["P10_Line4a_GivenName[0]",4,g("sp_first")],
+      ["P10_Line4a_MiddleName[0]",4,g("sp_middle")],["P10_Line4d_DateofBirth[0]",4,mmddyyyy(g("sp_dob"))],
+    ] : []),
+    ["P12_Line3_Telephone[0]",11,g("s_phone")],["P12_Line5_Email[0]",11,g("s_email")],
+    ...ck,
   ];
   const I130A = [
     ["Pt1Line3a_FamilyName[0]",1,g("s_last")],["Pt1Line3b_GivenName[0]",1,g("s_first")],

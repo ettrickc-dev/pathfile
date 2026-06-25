@@ -7,6 +7,40 @@ import fieldIndex from "./field_index.json";
 import { FEES, FORM_META, EVIDENCE, WHERE_TO_FILE, SIGN_INFO } from "./formsRegistry.js";
 import { BLANK_URLS } from "./blanks.js";
 
+// Items PathFile does NOT auto-fill: the variable-length tables (prior addresses,
+// jobs, trips, children) and a few quirky checkboxes. The applicant completes these
+// BY HAND before mailing. Shown ONLY in the filing instructions — NEVER in the
+// cover letter to USCIS. Keyed by form code; forms not listed need nothing by hand.
+const HANDWRITE = {
+  "N-400": [
+    "Where You Have Lived (last 5 years): list every prior address with move-in and move-out dates. Your current address is already filled in.",
+    "Time Outside the United States (last 5 years): list each trip, with the date you left and the date you returned.",
+    "Employment and Schools (last 5 years): list each employer or school with its address and your dates there. Your current one is already filled in.",
+    "Marital History: if you were married before, add each prior spouse and how that marriage ended.",
+    "Information About Your Children: list each child's full legal name, date of birth, and A-Number (if they have one).",
+    "Any remaining 'have you ever' boxes in the eligibility section that were left blank: mark 'No' in each.",
+  ],
+  "I-130": [
+    "Petitioner — addresses and employment for the last 5 years: list each one with dates. Your current address and employer are already filled in.",
+    "Beneficiary (your spouse) — address and employment history: list each one with dates.",
+    "Beneficiary's prior spouse(s) and children, if any: add their full names and dates of birth.",
+  ],
+  "I-485": [
+    "Address History (last 5 years): list every address with dates. Your current address is already filled in.",
+    "Employment History (last 5 years): list every employer with dates. Your current employer is already filled in.",
+    "Information About Your Parents: add their names and dates of birth if not already shown.",
+    "Information About Your Children, if any: list each child's name and date of birth.",
+    "Any remaining inadmissibility boxes left blank: mark 'No' in each.",
+  ],
+};
+
+// Hand-write items for the forms in this package, in assembly order. Empty if none.
+function handwriteFor(order) {
+  return order
+    .map((c) => ({ code: c, items: HANDWRITE[c] || [] }))
+    .filter((x) => x.items.length);
+}
+
 const todayStr = () =>
   new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
@@ -108,30 +142,43 @@ async function buildPackagePdf(clientData, result, data) {
   lines.push({ gap: 10 });
   lines.push({ text: "YOUR FILING INSTRUCTIONS — read before mailing", bold: true, size: 13, after: 8 });
 
-  lines.push({ text: "1. Sign each form (black ink, the correct person):", bold: true, after: 4 });
+  // Items the applicant must complete by hand (NOT in the cover letter above).
+  let step = 1;
+  const hw = handwriteFor(order);
+  if (hw.length) {
+    lines.push({ text: `${step++}. Finish these items by hand first (we could not pre-fill them):`, bold: true, after: 4 });
+    hw.forEach(({ code, items }) => {
+      lines.push({ text: `   On Form ${code}:` });
+      items.forEach((it) => lines.push({ text: `      • ${it}` }));
+    });
+    lines.push({ text: "   Use black ink and write clearly. Do all of this before you sign.", after: 2 });
+    lines.push({ gap: 6 });
+  }
+
+  lines.push({ text: `${step++}. Sign each form (black ink, the correct person):`, bold: true, after: 4 });
   order.forEach((c) => {
     const s = SIGN_INFO[c];
     if (s) lines.push({ text: `   • ${c}: ${s.part} — signed by ${s.who}.` });
   });
   lines.push({ gap: 6 });
 
-  lines.push({ text: "2. Stack the package in this order:", bold: true, after: 4 });
+  lines.push({ text: `${step++}. Stack the package in this order:`, bold: true, after: 4 });
   order.forEach((c, i) => lines.push({ text: `   ${i + 1}. ${c} — ${FORM_META[c].title}` }));
   lines.push({ gap: 6 });
 
-  lines.push({ text: "3. Attach this evidence:", bold: true, after: 4 });
+  lines.push({ text: `${step++}. Attach this evidence:`, bold: true, after: 4 });
   order.forEach((c) => {
     (EVIDENCE[c] || []).forEach((e) => lines.push({ text: `   • [${c}] ${e}` }));
   });
   lines.push({ gap: 6 });
 
-  lines.push({ text: "4. Pay the USCIS filing fee:", bold: true, after: 4 });
+  lines.push({ text: `${step++}. Pay the USCIS filing fee:`, bold: true, after: 4 });
   lines.push({ text: hasG1450
     ? `   Total $${fee.toLocaleString()}. Enter this exact amount on Form G-1450 and place it on top of the package. USCIS no longer accepts checks for most forms.`
     : `   Total $${fee.toLocaleString()}, paid to USCIS. See the form's page for accepted payment methods.` });
   lines.push({ gap: 6 });
 
-  lines.push({ text: "5. Mail your complete package to:", bold: true, after: 4 });
+  lines.push({ text: `${step++}. Mail your complete package to:`, bold: true, after: 4 });
   lines.push({ text: `   ${m.label}` });
   if (m.usps) lines.push({ text: `   By USPS: ${m.usps}` });
   if (m.courier) lines.push({ text: `   By courier (FedEx/UPS/DHL): ${m.courier}` });
@@ -1005,6 +1052,12 @@ export default function App() {
         .pf-histtitle { font-weight:600; font-size:0.9rem; margin-bottom:4px; }
         .pf-histlist { margin:0; padding-left:20px; font-size:0.9rem; color:#333; }
         .pf-histlist li { margin:2px 0; }
+        .pf-handwrite { background:#fff7ed; border:1px solid #f0c089; }
+        .pf-handnote { margin:4px 0 8px; font-size:0.9rem; color:#7a4a12; }
+        .pf-handgroup { margin-top:8px; }
+        .pf-handcode { font-weight:700; font-size:0.9rem; color:#8a4b00; }
+        .pf-handlist { margin:2px 0 0; padding-left:20px; font-size:0.9rem; color:#5a4326; }
+        .pf-handlist li { margin:3px 0; line-height:1.4; }
         .pf-getbox { margin:18px 0 4px; padding:16px 18px; border:1px solid #cfe0d8;
           border-radius:12px; background:#f0f7f3; }
         .pf-getbox-title { font-weight:700; font-size:0.95rem; margin-bottom:8px; color:#15514e; }
@@ -1787,8 +1840,27 @@ function Draft({ result, data, answers, paid, final, onNext, onBack, onRestart }
           <div className="pf-assembly">
             <div className="pf-notes-title">Sign, assemble &amp; mail</div>
 
+            {(() => {
+              const hw = handwriteFor(assemblyOrder(result));
+              if (!hw.length) return null;
+              return (
+                <div className="pf-asmblock pf-handwrite">
+                  <div className="pf-asmlabel">1 · Finish these items by hand first</div>
+                  <p className="pf-handnote">A few sections are variable-length tables we cannot pre-fill. Write these in by hand (black ink) before you sign:</p>
+                  {hw.map(({ code, items }) => (
+                    <div key={code} className="pf-handgroup">
+                      <div className="pf-handcode">On Form {code}:</div>
+                      <ul className="pf-handlist">
+                        {items.map((it, i) => <li key={i}>{it}</li>)}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+
             <div className="pf-asmblock">
-              <div className="pf-asmlabel">1 · Sign each form — the right person, in black ink</div>
+              <div className="pf-asmlabel">{(handwriteFor(assemblyOrder(result)).length ? 2 : 1)} · Sign each form — the right person, in black ink</div>
               {result.forms.map((f) => {
                 const s = SIGN_INFO[f.code];
                 return (
@@ -1803,7 +1875,7 @@ function Draft({ result, data, answers, paid, final, onNext, onBack, onRestart }
             </div>
 
             <div className="pf-asmblock">
-              <div className="pf-asmlabel">2 · Stack the package in this order</div>
+              <div className="pf-asmlabel">{(handwriteFor(assemblyOrder(result)).length ? 3 : 2)} · Stack the package in this order</div>
               <ol className="pf-order">
                 {assemblyOrder(result).map((c) => (
                   <li key={c}>
@@ -1815,7 +1887,7 @@ function Draft({ result, data, answers, paid, final, onNext, onBack, onRestart }
             </div>
 
             <div className="pf-asmblock">
-              <div className="pf-asmlabel">3 · Mail to this address</div>
+              <div className="pf-asmlabel">{(handwriteFor(assemblyOrder(result)).length ? 4 : 3)} · Mail to this address</div>
               {(() => {
                 const m = mailingFor(result);
                 return (

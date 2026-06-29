@@ -5,6 +5,29 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build": "vite build && node copy-public.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.2.0",
+    "jszip": "^3.10.1",
+    "pdf-lib": "^1.17.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "stripe": "^16.12.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0"
+  }
+}
+{
+  "name": "pathfile",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },

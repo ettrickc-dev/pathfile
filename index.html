@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Easy Immigration Filing — Get your USCIS forms done right</title>
+<meta name="description" content="Answer plain-English questions and we fill out the real USCIS forms, tell you what to include, and show you where to mail it. Document preparation, not a law firm." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#0F2240; --navy-2:#16315c; --green:#1B7A4E; --green-d:#15623e;
+    --ink:#1a2433; --muted:#5a6675; --line:#e3e7ee; --bg:#ffffff; --bg-soft:#f6f8fb;
+    --radius:14px; --maxw:1080px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16.5px; line-height:1.7; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility; font-feature-settings:'cv11','ss01'; letter-spacing:-.006em;
+  }
+  a{color:var(--green); text-decoration:none;}
+  h1,h2,h3{line-height:1.16; color:var(--navy); margin:0 0 .5em; letter-spacing:-.025em;}
+  h1{font-size:2.6rem; font-weight:800;}
+  h2{font-size:1.85rem; font-weight:800; letter-spacing:-.02em;}
+  h3{font-size:1.15rem; font-weight:700; letter-spacing:-.015em;}
+  p{margin:0 0 1em;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 20px;}
+  .btn{display:inline-block; background:var(--green); color:#fff; font-weight:700;
+    padding:14px 26px; border-radius:10px; border:0; cursor:pointer; font-size:1.05rem; line-height:1.2; letter-spacing:-.01em;}
+  .btn:hover{background:var(--green-d);}
+  .btn-light{background:#fff; color:var(--navy); border:1px solid var(--line);}
+  .btn-light:hover{border-color:var(--green);}
+
+  /* NAV */
+  header.nav{position:sticky; top:0; z-index:30; background:var(--navy); color:#fff;}
+  .nav-in{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 20px; max-width:var(--maxw); margin:0 auto;}
+  .brand{display:flex; align-items:center; gap:10px; color:#fff; font-weight:800; font-size:1.12rem; letter-spacing:-.01em;}
+  .brand .seal{display:grid; place-items:center; width:32px; height:32px; border-radius:8px; background:var(--green); color:#fff; font-size:15px; flex:none;}
+  .nav-right{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .nav-link{color:#cdd7e6; font-size:.92rem; padding:8px 10px; border-radius:8px;}
+  .nav-link:hover{color:#fff;}
+  #langToggle{background:transparent; color:#cdd7e6; border:1px solid #2c456f; border-radius:8px; padding:7px 12px; cursor:pointer; font-size:.9rem;}
+  #langToggle:hover{color:#fff; border-color:#4a648c;}
+
+  /* TRUST BAR */
+  .trustbar{background:var(--bg-soft); border-bottom:1px solid var(--line);}
+  .trustbar ul{display:flex; flex-wrap:wrap; gap:8px 26px; list-style:none; margin:0; padding:10px 20px; max-width:var(--maxw); margin:0 auto; justify-content:center;}
+  .trustbar li{display:flex; align-items:center; gap:7px; font-size:.83rem; color:var(--muted);}
+  .trustbar li svg{flex:none; color:var(--green);}
+
+  /* HERO */
+  .hero{padding:48px 0 8px; text-align:center;}
+  .hero p.sub{font-size:1.28rem; line-height:1.55; color:var(--muted); max-width:700px; margin:0 auto 8px;}
+
+  /* GOAL TILES */
+  .goals{padding:24px 0 8px;}
+  .goals .eyebrow{text-align:center; color:var(--green); font-weight:700; font-size:.85rem; letter-spacing:.06em; text-transform:uppercase; margin-bottom:14px;}
+  .tilegrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .tile{display:flex; align-items:center; gap:16px; text-align:left; background:#fff; border:1.5px solid var(--line);
+    border-radius:var(--radius); padding:20px 22px; cursor:pointer; transition:border-color .15s, box-shadow .15s, transform .15s; color:var(--ink);}
+  .tile:hover{border-color:var(--green); box-shadow:0 6px 22px rgba(15,34,64,.08); transform:translateY(-2px);}
+  .tile:focus-visible{outline:3px solid rgba(27,122,78,.4); outline-offset:2px;}
+  .tile .ico{flex:none; width:46px; height:46px; border-radius:11px; background:rgba(27,122,78,.1); color:var(--green); display:grid; place-items:center;}
+  .tile .body{flex:1; min-width:0;}
+  .tile .t{font-weight:700; color:var(--navy); font-size:1.06rem; display:block;}
+  .tile .c{color:var(--muted); font-size:.92rem; display:block;}
+  .tile .f{color:#9aa6b6; font-size:.76rem; letter-spacing:.03em; display:block; margin-top:2px;}
+  .tile .arrow{flex:none; color:var(--green); font-size:1.3rem; opacity:.7;}
+  .tile:hover .arrow{opacity:1;}
+
+  /* sections */
+  section.band{padding:54px 0;}
+  .band.soft{background:var(--bg-soft); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .sec-head{text-align:center; max-width:640px; margin:0 auto 32px;}
+  .sec-head p{color:var(--muted); margin:0;}
+
+  /* HOW IT WORKS */
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .step{text-align:center;}
+  .step .n{width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; display:grid; place-items:center; margin:0 auto 12px;}
+  .step h3{margin-bottom:4px;}
+  .step p{color:var(--muted); font-size:.92rem; margin:0;}
+
+  /* WHAT YOU GET */
+  .features{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .feature{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:26px 22px; text-align:center;}
+  .feature .ico{width:52px; height:52px; border-radius:13px; background:rgba(27,122,78,.1); color:var(--green); display:grid; place-items:center; margin:0 auto 14px;}
+  .feature p{color:var(--muted); font-size:.94rem; margin:0;}
+
+  /* PRICING */
+  .pricing{text-align:center; max-width:640px; margin:0 auto;}
+  .pricing .price{font-size:2.4rem; font-weight:800; color:var(--navy); letter-spacing:-.02em;}
+  .pricing .price small{font-size:1rem; font-weight:600; color:var(--muted);}
+  .pricing p{color:var(--muted);}
+
+  /* REASSURANCE */
+  .reassure{max-width:760px; margin:0 auto; background:#fff; border:1px solid var(--line); border-left:4px solid var(--green);
+    border-radius:12px; padding:22px 24px; color:var(--ink);}
+  .reassure strong{color:var(--navy);}
+
+  /* FAQ */
+  .faq{max-width:760px; margin:0 auto;}
+  details{background:#fff; border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden;}
+  summary{cursor:pointer; padding:16px 20px; font-weight:600; color:var(--navy); list-style:none; display:flex; justify-content:space-between; align-items:center; gap:12px;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:"+"; color:var(--green); font-size:1.3rem; font-weight:700;}
+  details[open] summary::after{content:"–";}
+  details .ans{padding:0 20px 18px; color:var(--muted); font-size:.95rem;}
+
+  /* FOOTER */
+  footer{background:var(--navy); color:#cdd7e6; padding:40px 0 28px; margin-top:8px;}
+  .foot-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:28px;}
+  footer h4{color:#fff; font-size:.95rem; margin:0 0 12px;}
+  footer a{color:#cdd7e6; display:block; padding:4px 0; font-size:.92rem;}
+  footer a:hover{color:#fff;}
+  .foot-brand p{font-size:.88rem; color:#9fb0c7; max-width:300px;}
+  .foot-legal-note{border-top:1px solid #24395e; margin-top:24px; padding-top:16px; font-size:.8rem; color:#8298b6; text-align:center; max-width:var(--maxw); margin-left:auto; margin-right:auto;}
+
+  @media (max-width:760px){
+    h1{font-size:1.7rem;} h2{font-size:1.35rem;}
+    .tilegrid{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr 1fr;}
+    .features{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr;}
+    .nav-link.hide-sm{display:none;}
+    .hero{padding:32px 0 4px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. NAV -->
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top"><span class="seal" aria-hidden="true">★</span><span data-en="Easy Immigration Filing" data-es="Easy Immigration Filing">Easy Immigration Filing</span></a>
+    <nav class="nav-right" aria-label="Primary">
+      <button id="langToggle" type="button" aria-label="Cambiar a Español">Español</button>
+      <a class="nav-link hide-sm" id="retrieveLink" href="/app/?retrieve=1" data-en="Already paid? Get my forms" data-es="¿Ya pagaste? Obtén tus formularios">Already paid? Get my forms</a>
+      <a class="btn" id="navCta" href="#goals" data-en="Start my application" data-es="Comenzar mi solicitud">Start my application</a>
+    </nav>
+  </div>
+</header>
+
+<!-- 2. TRUST BAR -->
+<div class="trustbar">
+  <ul>
+    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg><span data-en="Document preparation service — not a law firm" data-es="Servicio de preparación de documentos — no es un bufete de abogados">Document preparation service — not a law firm</span></li>
+    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg><span data-en="Forms checked before you file" data-es="Revisamos los formularios antes de enviarlos">Forms checked before you file</span></li>
+    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg><span data-en="Plain-English questions, no legal jargon" data-es="Preguntas claras, sin lenguaje legal complicado">Plain-English questions, no legal jargon</span></li>
+    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg><span data-en="Starts at $99 — government fees confirmed at uscis.gov separately" data-es="Desde $99 — las tarifas del gobierno se confirman por separado en uscis.gov">Starts at $99 — government fees confirmed at uscis.gov separately</span></li>
+  </ul>
+</div>
+
+<main id="top">
+<!-- 3. HERO -->
+<section class="hero">
+  <div class="wrap">
+    <h1 data-en="Get your immigration forms done right — without a lawyer" data-es="Completa tus formularios de inmigración correctamente — sin un abogado">Get your immigration forms done right — without a lawyer</h1>
+    <p class="sub" data-en="Answer plain-English questions. We fill out the real USCIS forms, tell you exactly what to include, and show you where to mail it." data-es="Responde preguntas en lenguaje sencillo. Nosotros llenamos los formularios oficiales de USCIS, te decimos exactamente qué incluir y te mostramos dónde enviarlos.">Answer plain-English questions. We fill out the real USCIS forms, tell you exactly what to include, and show you where to mail it.</p>
+  </div>
+</section>
+
+<!-- 4. GOAL TILES -->
+<section class="goals" id="goals" aria-labelledby="goals-h">
+  <div class="wrap">
+    <p class="eyebrow" id="goals-h" data-en="What would you like to do?" data-es="¿Qué te gustaría hacer?">What would you like to do?</p>
+    <div class="tilegrid">
+
+      <a class="tile" href="/app/?goal=naturalize" aria-label="Apply to become a U.S. citizen">
+        <span class="ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.8 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg></span>
+        <span class="body"><span class="t" data-en="Apply to become a U.S. citizen" data-es="Solicitar la ciudadanía estadounidense">Apply to become a U.S. citizen</span><span class="c" data-en="I already have a green card" data-es="Ya tengo una green card">I already have a green card</span><span class="f">Form N-400</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="tile" href="/app/?goal=certificate" aria-label="Get proof I am already a U.S. citizen">
+        <span class="ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H4z"/><path d="M8 20h8M9 16v4M15 16v4"/></svg></span>
+        <span class="body"><span class="t" data-en="Get proof I'm already a U.S. citizen" data-es="Obtener prueba de que ya soy ciudadano">Get proof I'm already a U.S. citizen</span><span class="c" data-en="Through my U.S. citizen parent(s)" data-es="A través de mi padre o madre ciudadano(a)">Through my U.S. citizen parent(s)</span><span class="f">Form N-600</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="tile" href="/app/?goal=sponsor" aria-label="Help a relative immigrate">
+        <span class="ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0112 0"/><path d="M17 11l2 2 4-4"/></svg></span>
+        <span class="body"><span class="t" data-en="Help a relative immigrate" data-es="Ayudar a un familiar a inmigrar">Help a relative immigrate</span><span class="c" data-en="I'm the sponsor / petitioner" data-es="Yo soy el patrocinador / peticionario">I'm the sponsor / petitioner</span><span class="f">Form I-130</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="tile" href="/app/?goal=selfgc" aria-label="Get a green card for myself">
+        <span class="ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></span>
+        <span class="body"><span class="t" data-en="Get a green card for myself" data-es="Obtener una green card para mí">Get a green card for myself</span><span class="c" data-en="A relative will sponsor me" data-es="Un familiar me va a patrocinar">A relative will sponsor me</span><span class="f">Forms I-130 + I-485</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="tile" href="/app/?goal=replace_card" aria-label="Replace or renew my green card">
+        <span class="ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg></span>
+        <span class="body"><span class="t" data-en="Replace or renew my green card" data-es="Reemplazar o renovar mi green card">Replace or renew my green card</span><span class="c" data-en="Lost, expiring, damaged, or has an error" data-es="Perdida, por vencer, dañada o con un error">Lost, expiring, damaged, or has an error</span><span class="f">Form I-90</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="tile" href="/app/?goal=remove_conditions" aria-label="Remove conditions on my green card">
+        <span class="ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <span class="body"><span class="t" data-en="Remove conditions on my green card" data-es="Quitar las condiciones de mi green card">Remove conditions on my green card</span><span class="c" data-en="I have a 2-year card from marriage" data-es="Tengo una tarjeta de 2 años por matrimonio">I have a 2-year card from marriage</span><span class="f">Form I-751</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="tile" href="/app/?goal=fiance" aria-label="Bring my fiance to the U.S.">
+        <span class="ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5 5 0 0112 5a5 5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></span>
+        <span class="body"><span class="t" data-en="Bring my fiancé(e) to the U.S." data-es="Traer a mi prometido(a) a los EE. UU.">Bring my fiancé(e) to the U.S.</span><span class="c" data-en="K-1 visa — marry within 90 days" data-es="Visa K-1 — casarse dentro de 90 días">K-1 visa — marry within 90 days</span><span class="f">Form I-129F</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- 5. HOW IT WORKS -->
+<section class="band soft" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="sec-head"><h2 id="how-h" data-en="How it works" data-es="Cómo funciona">How it works</h2></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3 data-en="Pick your goal" data-es="Elige tu objetivo">Pick your goal</h3><p data-en="Choose what you need from the options above." data-es="Elige lo que necesitas de las opciones de arriba.">Choose what you need from the options above.</p></div>
+      <div class="step"><div class="n">2</div><h3 data-en="Answer questions" data-es="Responde preguntas">Answer questions</h3><p data-en="Simple questions in plain English or Spanish." data-es="Preguntas sencillas en inglés o español.">Simple questions in plain English or Spanish.</p></div>
+      <div class="step"><div class="n">3</div><h3 data-en="We build your forms" data-es="Creamos tus formularios">We build your forms</h3><p data-en="Your answers go onto the real USCIS forms." data-es="Tus respuestas se colocan en los formularios oficiales de USCIS.">Your answers go onto the real USCIS forms.</p></div>
+      <div class="step"><div class="n">4</div><h3 data-en="Print, sign, and mail" data-es="Imprime, firma y envía">Print, sign, and mail</h3><p data-en="Follow your instructions and file with confidence." data-es="Sigue tus instrucciones y presenta con confianza.">Follow your instructions and file with confidence.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. WHAT YOU GET -->
+<section class="band" aria-labelledby="get-h">
+  <div class="wrap">
+    <div class="sec-head"><h2 id="get-h" data-en="What you get" data-es="Lo que recibes">What you get</h2></div>
+    <div class="features">
+      <div class="feature"><div class="ico" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></div><h3 data-en="Completed USCIS forms" data-es="Formularios de USCIS completos">Completed USCIS forms</h3><p data-en="Filled out and ready for you to sign." data-es="Llenos y listos para que los firmes.">Filled out and ready for you to sign.</p></div>
+      <div class="feature"><div class="ico" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><h3 data-en="Personalized evidence checklist" data-es="Lista de evidencia personalizada">Personalized evidence checklist</h3><p data-en="The exact documents to include with your package." data-es="Los documentos exactos que debes incluir en tu paquete.">The exact documents to include with your package.</p></div>
+      <div class="feature"><div class="ico" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H4z"/><path d="M4 8l8 5 8-5"/></svg></div><h3 data-en="Step-by-step mailing instructions" data-es="Instrucciones de envío paso a paso">Step-by-step mailing instructions</h3><p data-en="Who signs, what to attach, and where to send it." data-es="Quién firma, qué adjuntar y a dónde enviarlo.">Who signs, what to attach, and where to send it.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. PRICING -->
+<section class="band soft" aria-labelledby="price-h">
+  <div class="wrap pricing">
+    <h2 id="price-h" data-en="Honest, simple pricing" data-es="Precios honestos y sencillos">Honest, simple pricing</h2>
+    <div class="price">$99 <small data-en="to start" data-es="para comenzar">to start</small></div>
+    <p data-en="Government filing fees are separate and paid directly to USCIS. We'll tell you the exact amount before you file. An attorney-reviewed option is available at checkout." data-es="Las tarifas de presentación del gobierno son aparte y se pagan directamente a USCIS. Te diremos el monto exacto antes de presentar. Una opción revisada por un abogado está disponible al pagar.">Government filing fees are separate and paid directly to USCIS. We'll tell you the exact amount before you file. An attorney-reviewed option is available at checkout.</p>
+    <p style="margin-top:18px"><a class="btn" href="#goals" data-en="Start my application" data-es="Comenzar mi solicitud">Start my application</a></p>
+  </div>
+</section>
+
+<!-- 8. REASSURANCE / DISCLAIMER -->
+<section class="band" aria-labelledby="reassure-h">
+  <div class="wrap">
+    <div class="reassure">
+      <h3 id="reassure-h" style="margin-top:0" data-en="A quick, honest note" data-es="Una nota breve y honesta">A quick, honest note</h3>
+      <p style="margin-bottom:0" data-en="Easy Immigration Filing prepares your documents — it does not provide legal advice. For complex cases or situations involving prior removals, visa denials, or criminal history, please consult a licensed immigration attorney." data-es="Easy Immigration Filing prepara tus documentos — no brinda asesoría legal. Para casos complejos o situaciones que involucren deportaciones previas, negaciones de visa o antecedentes penales, consulta a un abogado de inmigración con licencia.">Easy Immigration Filing prepares your documents — it does not provide legal advice. For complex cases or situations involving prior removals, visa denials, or criminal history, please consult a licensed immigration attorney.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. FAQ -->
+<section class="band soft" aria-labelledby="faq-h">
+  <div class="wrap faq">
+    <div class="sec-head"><h2 id="faq-h" data-en="Questions, answered" data-es="Preguntas, respondidas">Questions, answered</h2></div>
+    <details>
+      <summary data-en="Do I need a lawyer to use this?" data-es="¿Necesito un abogado para usar esto?">Do I need a lawyer to use this?</summary>
+      <div class="ans" data-en="No. Most people complete these forms themselves. We guide you through plain-English questions and prepare the forms for you. If your case is complex, you can add a licensed attorney review at checkout." data-es="No. La mayoría de las personas completan estos formularios por su cuenta. Te guiamos con preguntas en lenguaje sencillo y preparamos los formularios por ti. Si tu caso es complejo, puedes agregar la revisión de un abogado con licencia al pagar.">No. Most people complete these forms themselves. We guide you through plain-English questions and prepare the forms for you. If your case is complex, you can add a licensed attorney review at checkout.</div>
+    </details>
+    <details>
+      <summary data-en="What if I make a mistake in my answers?" data-es="¿Qué pasa si cometo un error en mis respuestas?">What if I make a mistake in my answers?</summary>
+      <div class="ans" data-en="You review a free draft of every form before you pay, so you can check each answer. You can go back and edit anything, and your instructions show you exactly what to confirm before you mail." data-es="Revisas un borrador gratuito de cada formulario antes de pagar, para que puedas verificar cada respuesta. Puedes regresar y editar cualquier cosa, y tus instrucciones te muestran exactamente qué confirmar antes de enviar.">You review a free draft of every form before you pay, so you can check each answer. You can go back and edit anything, and your instructions show you exactly what to confirm before you mail.</div>
+    </details>
+    <details>
+      <summary data-en="Is my information secure?" data-es="¿Está segura mi información?">Is my information secure?</summary>
+      <div class="ans" data-en="Yes. Your information is used only to prepare your forms and deliver them to you. Sensitive fields like your Social Security number are optional — you can leave them blank and write them in by hand. Payments are processed securely by Stripe." data-es="Sí. Tu información se usa únicamente para preparar tus formularios y entregártelos. Los campos sensibles como tu número de Seguro Social son opcionales — puedes dejarlos en blanco y escribirlos a mano. Los pagos se procesan de forma segura con Stripe.">Yes. Your information is used only to prepare your forms and deliver them to you. Sensitive fields like your Social Security number are optional — you can leave them blank and write them in by hand. Payments are processed securely by Stripe.</div>
+    </details>
+    <details>
+      <summary data-en="What happens after I pay?" data-es="¿Qué pasa después de pagar?">What happens after I pay?</summary>
+      <div class="ans" data-en="Your completed package downloads right away and we email you a copy with a link to download it again anytime. Then you print, sign, attach your evidence, and mail it with payment — your instructions walk you through each step." data-es="Tu paquete completo se descarga de inmediato y te enviamos una copia por correo con un enlace para descargarlo cuando quieras. Luego imprimes, firmas, adjuntas tu evidencia y lo envías con el pago — tus instrucciones te guían en cada paso.">Your completed package downloads right away and we email you a copy with a link to download it again anytime. Then you print, sign, attach your evidence, and mail it with payment — your instructions walk you through each step.</div>
+    </details>
+  </div>
+</section>
+</main>
+
+<!-- 10. FOOTER -->
+<footer>
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <h4>Easy Immigration Filing</h4>
+      <p data-en="A self-help document-preparation service that helps you complete and file U.S. immigration forms with confidence." data-es="Un servicio de autoayuda para la preparación de documentos que te ayuda a completar y presentar formularios de inmigración de EE. UU. con confianza.">A self-help document-preparation service that helps you complete and file U.S. immigration forms with confidence.</p>
+    </div>
+    <div>
+      <h4 data-en="Product" data-es="Producto">Product</h4>
+      <a href="#goals" data-en="Start my application" data-es="Comenzar mi solicitud">Start my application</a>
+      <a href="#how-h" data-en="How it works" data-es="Cómo funciona">How it works</a>
+      <a href="#price-h" data-en="Pricing" data-es="Precios">Pricing</a>
+      <a href="/app/?retrieve=1" data-en="Already paid? Get my forms" data-es="¿Ya pagaste? Obtén tus formularios">Already paid? Get my forms</a>
+    </div>
+    <div>
+      <h4 data-en="Legal & contact" data-es="Legal y contacto">Legal & contact</h4>
+      <a href="/app/" data-en="Terms of Service" data-es="Términos del servicio">Terms of Service</a>
+      <a href="/app/" data-en="Privacy Policy" data-es="Política de privacidad">Privacy Policy</a>
+      <a href="/app/" data-en="Refund Policy" data-es="Política de reembolso">Refund Policy</a>
+      <a href="mailto:support@easyimmigrationfiling.com">support@easyimmigrationfiling.com</a>
+    </div>
+  </div>
+  <p class="foot-legal-note" data-en="Easy Immigration Filing is not affiliated with USCIS or any government agency. It is not a law firm and does not provide legal advice. Blank USCIS forms are available for free at uscis.gov. © 2026 Easy Immigration Filing." data-es="Easy Immigration Filing no está afiliado a USCIS ni a ninguna agencia gubernamental. No es un bufete de abogados y no brinda asesoría legal. Los formularios en blanco de USCIS están disponibles gratis en uscis.gov. © 2026 Easy Immigration Filing.">Easy Immigration Filing is not affiliated with USCIS or any government agency. It is not a law firm and does not provide legal advice. Blank USCIS forms are available for free at uscis.gov. © 2026 Easy Immigration Filing.</p>
+</footer>
+
+<script>
+  // Español / English toggle — swaps text on every element carrying data-en/data-es.
+  (function(){
+    var btn = document.getElementById('langToggle');
+    var lang = 'en';
+    function setLang(l){
+      lang = l;
+      document.documentElement.lang = l;
+      document.querySelectorAll('[data-en]').forEach(function(el){
+        var v = (l === 'es') ? el.getAttribute('data-es') : el.getAttribute('data-en');
+        if (v != null) el.textContent = v;
+      });
+      btn.textContent = (l === 'es') ? 'English' : 'Español';
+      btn.setAttribute('aria-label', (l === 'es') ? 'Switch to English' : 'Cambiar a Español');
+    }
+    btn.addEventListener('click', function(){ setLang(lang === 'en' ? 'es' : 'en'); });
+  })();
+</script>
+</body>
+</html>
